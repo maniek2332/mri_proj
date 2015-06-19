@@ -75,31 +75,31 @@ fn besseli_for_value(nu : usize, x : f32) -> f32 {
 	let denominators;
 	
 	if nu == 0 {
-		powers = pow(x, 0, 8);
+		powers = next_powers(x, 0, 8, 2);
 		denominators = [1.0, 4.0, 64.0, 2304.0, 147456.0]; 
 	} else {
-		powers = pow(x, 1, 9);
+		powers = next_powers(x, 1, 9, 2);
 		denominators = [2.0, 16.0, 384.0, 18432.0, 737280.0]; 
 	}
 	
 	return compute_besseli(&powers, &denominators);
 }
 
-fn pow(x: f32, from: i32, to: i32) -> Vec<f32>{
+pub fn next_powers(x: f32, from: i32, to: i32, step: i32) -> Vec<f32>{
   let mut vec: Vec<f32> = Vec::new();
   let mut result : f32 = 1.0;	
   let mut c = 1;
   let end = to + 1;
   if from == 0 {
 	vec.push(1.0);
-	c = 2;
+	c = step;
   }
   
   for i in 1..end {
 	result = result * x;
 	if i == c {
 		vec.push(result);
-		c = c + 2;
+		c = c + step;
 	}	
   }
   

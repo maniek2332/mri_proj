@@ -10,6 +10,7 @@ mod approxl1_i0;
 mod matrix_math;
 mod matlab_fun;
 mod test;
+mod correct_rice_gauss;
 
 fn load_image(path : String) -> na::DMat<f32> {
     let mut mat = na::DMat::new_zeros(256, 256);
@@ -116,7 +117,7 @@ fn idct2(image_src : &na::DMat<f32>) -> na::DMat<f32> {
 }
 
 fn main() {
-	test::test_approx1l();
+	test::test_correct_rice_gauss();
     let img = load_image("test.csv".to_string());
     let img_f = filter_img(&img, 5, 1. / 25.);
     println!("IMG1: {:?}", img[(0, 0)]);
