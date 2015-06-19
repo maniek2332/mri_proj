@@ -4,25 +4,37 @@ use std::ops::*;
 use matrix_math;
 use matlab_fun;
 
-pub fn compute(z: DMat<f32>) {
-  let cont: bool = check(1.5, z.as_vec());
-  let z_clone = z.clone();
-	
-  let z8 = z_clone.mul(8.0);
-  let z8_to_2 = matrix_math::power_matrix_by_scalar(&z8, 2);
-  let z8_to_3 = matrix_math::power_matrix_by_scalar(&z8, 3);
+pub fn compute(z: DMat<f32>) -> DMat<f32>{
+	let cont: bool = check(1.5, z.as_vec());
+	let z_clone = z.clone();
+
+	let z8 = z_clone.mul(8.0);
+	let z8_to_2 = matrix_math::power_matrix_by_scalar(&z8, 2);
+	let z8_to_3 = matrix_math::power_matrix_by_scalar(&z8, 3);
+
+	let mn = compute_mn(&z8, &z8_to_2, &z8_to_3);
+	let md = compute_md(&z8, &z8_to_2, &z8_to_3);
+
+	let mut m = matrix_math::div_matrix_by_matrix_each_value(&mn, &md);
+	let mut k = Vec::new();
+	if cont {
+		k = matlab_fun::find_less_than(&z, 1.5);
+		let zk = matlab_fun::select_cells(&z, &k);
+		let besseli1 = matlab_fun::besseli(1, &zk);
+		let besseli0 = matlab_fun::besseli(0, &zk);
+		let besseli_div = matrix_math::div_matrix_by_matrix_each_value(&besseli1, &besseli0);
+
+		for i in 0..k.len() {
+			m[k[i]] = besseli_div[(0,i)];
+		}
+	}
   
-  let mn = compute_mn(&z8, &z8_to_2, &z8_to_3);
-  let md = compute_md(&z8, &z8_to_2, &z8_to_3);
-  
-  let mut m = matrix_math::div_matrix_by_matrix_each_value(&mn, &md);
-  
-  if cont {
-	matlab_fun::print_matrix(&z);
-	let k: Vec<(usize, usize)> = matlab_fun::find_less_than(&z, 1.5);
-	print_vector(&k);
-	//M(K)=besseli(1,z(K))./besseli(0,z(K));
-  }
+	let zeros: Vec<(usize, usize)> = matlab_fun::find_equal(&z, 0.0);
+	for i in 0..zeros.len() {
+		m[k[i]] = 0.0;
+	}
+
+	return m;
 }
 
 fn check(treshold: f32, z: &[f32]) -> bool {
@@ -40,9 +52,7 @@ fn compute_mn(z8: &DMat<f32>, z8_to_2: &DMat<f32>, z8_to_3: &DMat<f32>) -> DMat<
   //Mn=1-a-b-c
   
   //a = 3./z8
-  println!("z {} ", z8.index((0,0)));
   let a = matrix_math::div_scalar_by_matrix(3.0, &z8_clone);
-  println!("a {} ", a.index((0,0)));
   //b = 15./2./(z8).^2
   let b = matrix_math::div_scalar_by_matrix(7.5, &z8_to_2);
 
