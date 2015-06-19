@@ -4,6 +4,11 @@ use std::io::BufReader;
 use std::io::BufRead;
 use std::cmp::{min, max};
 
+mod approxl1_i0;
+mod matrix_math;
+mod matlab_fun;
+mod test;
+
 fn load_image(path : String) -> na::DMat<f32> {
     let mut mat = na::DMat::new_zeros(256, 256);
 
@@ -52,6 +57,7 @@ fn filter(image_src : &na::DMat<f32>, mask_size : usize, mask_val : f32) -> na::
 }
 
 fn main() {
+	test::test_approx1l();
     let img = load_image("test.csv".to_string());
     let img_f = filter(&img, 5, 1. / 25.);
     println!("IMG1: {:?}", img[(0, 0)]);
