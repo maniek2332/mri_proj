@@ -1,5 +1,7 @@
 extern crate nalgebra as na;
 use na::{DMat};
+use std::f32::consts::PI;
+use std::cmp::Ordering;
 use std::ops::*;
 
 
@@ -98,4 +100,36 @@ pub fn matrix_sqrt(mat : &DMat<f32>) -> DMat<f32> {
 	}
 	
 	return result;
+}
+
+pub fn mat_map<F>(mat_src: &na::DMat<f32>, mut f: F) -> na::DMat<f32> where F: FnMut(f32) -> f32 {
+    let mut mat = na::DMat::new_zeros(mat_src.nrows(), mat_src.ncols());
+    for i in 0..mat.nrows() {
+        for j in 0..mat.ncols() {
+            mat[(i, j)] = f(mat_src[(i, j)]);
+        }
+    }
+    mat
+}
+
+pub fn mat_map_mut<F>(mut mat: na::DMat<f32>, mut f: F) -> na::DMat<f32> where F: FnMut(f32) -> f32 {
+    for i in 0..mat.nrows() {
+        for j in 0..mat.ncols() {
+            mat[(i, j)] = f(mat[(i, j)]);
+        }
+    }
+    mat
+}
+
+pub fn mat_max<N : Clone + Copy + PartialOrd>(mat: &na::DMat<N>) -> N {
+    let mut mat_vec = mat.clone().to_vec();
+    mat_vec.sort_by(|a, b| a.partial_cmp(b).unwrap_or(Ordering::Equal));
+    let max_val = *mat_vec.last().unwrap();
+    max_val
+}
+
+pub fn sum_vec<T>(s: &Vec<T>, init: &T) -> T
+    where T : Copy + Add<T, Output=T>
+{
+    s.iter().fold(*init, |acc, &item| acc + item)    
 }
