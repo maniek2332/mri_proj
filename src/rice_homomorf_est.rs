@@ -5,41 +5,75 @@ use matlab_fun;
 use matrix_math;
 use filter2b;
 use em_ml_rice2D;
+use lpf;
+use correct_rice_gauss;
 
-pub fn compute_for_uknown_snr(mat : &DMat<f32>, lpf: f32, modo: i32) {
+pub fn compute_for_uknown_snr(mat : &DMat<f32>, lpf: f32, modo: i32) -> (DMat<f32>, DMat<f32>){
 	let (m2, sigma_n) = em_ml_rice2D::compute(&mat,10, 3);
-	let snr = matrix_math::div_matrix_by_matrix_each_value(&m2, sigma_n);
+	let snr = matrix_math::div_matrix_by_matrix_each_value(&m2, &sigma_n);
 	
-	retrun compute(&mat, &snr, lpf, modo);
+	return compute(&mat, &snr, lpf, modo);
 }
 
-pub fn compute(mat : &DMat<f32>, snr: &DMat<f32>, lpf: f32, modo: i32) {
-	let const eq: f32 = 0.5772156649015328606;
+pub fn compute(mat : &DMat<f32>, snr: &DMat<f32>, _lpf: f32, modo: i32) -> (DMat<f32>, DMat<f32>){
 	let (m2, sigma_n) = em_ml_rice2D::compute(&mat,10, 3);
 	
 	let m1= filter2b::filter_img(&mat, 5, 0.04);
+	
+	let sub = mat.clone().sub(m1.clone());
+	let rn = matlab_fun::abs(&sub);
+	let vioz = value_or_zeros(&rn, 0.001);
+	let rn_vioz = rn.add(vioz);
+	
+	let l_rn = matrix_math::mat_map(&rn_vioz, |x| x.ln());
+	
+	let lpf2 = lpf::lpf2(l_rn, _lpf);
+	let mapa2 = matrix_math::mat_map(&lpf2, |x| x.exp());
+	
+	//2./sqrt(2).*exp(-psi(1)./2) = 1.8874
+	let const_val: f32 = 1.8874;
+	let mapa_g = mapa2.div(const_val);
+	
+	let mut rn_abs = DMat::new_ones(1,1);
+	
+	if modo == 1 {
+		let temp = mat.clone().sub(m1.clone());
+		rn_abs = matlab_fun::abs(&temp);
+	} else if modo==2{
+		let temp = mat.clone().sub(m2);
+		rn_abs = matlab_fun::abs(&temp);
+	} else {
+		rn_abs = matlab_fun::abs(&mat);
+	}
+
+	let vioz_2 = value_or_zeros(&rn_abs, 0.001);
+	let rn_abs_vioz_2 = rn_abs.add(vioz_2);
+	let l_rn_abs = matrix_math::mat_map(&rn_abs_vioz_2, |x| x.ln());
+	let lpf2_abs = lpf::lpf2(l_rn_abs, _lpf);
+	
+	let fc1= correct_rice_gauss::compute(&snr);
+	let lpf1 = lpf2.sub(fc1);
+	let lpf1_2 = lpf::lpf2(lpf1,_lpf + 2.0);
+	
+	let mapa1 = matrix_math::mat_map(&lpf1_2, |x| x.exp());
+
+	let mapa_r = mapa1.div(const_val);
+	
+	return (mapa_r, mapa_g);
 }
 
-Rn=abs(In-M1);
-lRn=log(Rn.*(Rn~=0)+0.001.*(Rn==0));
-LPF2=lpf((lRn),LPF);
-Mapa2=exp(LPF2);
-MapaG=Mapa2.*2./sqrt(2).*exp(-psi(1)./2);
-
-%Rician-------------------------
-if Modo==1
-    LocalMean=M1;
-elseif Modo==2
-    LocalMean=M2;
-else
-    LocalMean=0;
-end
-
-Rn=abs(In-LocalMean);
-lRn=log(Rn.*(Rn~=0)+0.001.*(Rn==0));
-LPF2=lpf((lRn),LPF);
-Fc1=correct_rice_gauss(SNR);
-LPF1=LPF2-Fc1;
-LPF1=lpf((LPF1),LPF+2,2);
-Mapa1=exp(LPF1);
-MapaR=Mapa1.*2./sqrt(2).*exp(-psi(1)./2);
+fn value_or_zeros(mat : &DMat<f32>, value: f32) -> DMat<f32> {
+   let rows_size = mat.nrows();
+   let cols_size = mat.ncols();
+   let mut result: DMat<f32> = DMat::new_zeros(rows_size, cols_size);
+ 
+   for r in 0..rows_size {
+	for c in 0..cols_size {
+		if(mat[(r,c)] ==  0.0 ) {
+			result[(r,c)] = value;
+		}
+	}
+   }
+  
+  return result;	
+}

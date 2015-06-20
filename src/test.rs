@@ -45,6 +45,15 @@ pub fn test_em_ml_rice2D() {
 
 pub fn test_rice_homomorf_est() {
 	println!("Starting test_rice_homomorf_est");
+	let a : DMat<f32> = DMat::from_elem(4,4, 5.0); 
+	
+	let (b,c) = rice_homomorf_est::compute_for_uknown_snr(&a, 3.4, 2);
+	
+	println!("b mat");
+	matlab_fun::print_matrix(&b);
+	
+	println!("c mat");
+	matlab_fun::print_matrix(&c);
 }
 
 
