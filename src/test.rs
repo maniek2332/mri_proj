@@ -4,6 +4,7 @@ use approxl1_i0;
 use matlab_fun;
 use correct_rice_gauss;
 
+
 pub fn test_approx1l() {
     println!("Starting test_approx1l");
     let a: DMat<f32> = DMat::new_ones(1,3);
@@ -27,3 +28,12 @@ pub fn test_correct_rice_gauss() {
 	let b = correct_rice_gauss::compute(&a);
 	matlab_fun::print_matrix(&b);
 }
+
+pub fn test_em_ml_rice2D() {
+	println!("Starting test_em_ml_rice2D");
+	let a : DMat<f32> = DMat::new_ones(4,4);
+	
+}
+
+
+

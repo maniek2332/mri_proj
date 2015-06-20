@@ -11,6 +11,7 @@ mod matrix_math;
 mod matlab_fun;
 mod test;
 mod correct_rice_gauss;
+mod em_ml_rice2D;
 
 fn load_image(path : String) -> na::DMat<f32> {
     let mut mat = na::DMat::new_zeros(256, 256);
@@ -117,7 +118,7 @@ fn idct2(image_src : &na::DMat<f32>) -> na::DMat<f32> {
 }
 
 fn main() {
-	test::test_correct_rice_gauss();
+	test::test_em_ml_rice2D();
     let img = load_image("test.csv".to_string());
     let img_f = filter_img(&img, 5, 1. / 25.);
     println!("IMG1: {:?}", img[(0, 0)]);

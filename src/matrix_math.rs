@@ -37,6 +37,16 @@ pub fn mul_matrix_by_matrix_each_value(mat1: &DMat<f32>, mat2: &DMat<f32>) -> DM
   return result;
 }
 
+pub fn prod(vec : &[f32]) -> f32 {
+	let mut result = 1.0;
+	
+	for x in vec {
+		result = result * x;
+	}
+	
+	return result;
+}
+
 pub fn div_scalar_by_matrix(scalar: f32, mat: &DMat<f32>) -> DMat<f32>{
    let rows_size = mat.nrows();
    let cols_size = mat.ncols();

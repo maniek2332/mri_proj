@@ -115,3 +115,16 @@ fn compute_besseli(powers: &Vec<f32>, denominators: &[f32]) -> f32 {
 	
 	return result;
 }
+
+pub fn cast_to_f64(mat : &DMat<f32>) -> DMat<f64> {
+	let rows_size = mat.nrows();
+	let cols_size = mat.ncols();
+	let mut result : DMat<f64> = DMat::new_zeros(rows_size, cols_size);
+
+	for r in 0..rows_size {
+		for c in 0..cols_size {
+			result[(r,c)] = mat[(r,c)] as f64;
+		}
+	}
+	return result;
+}
