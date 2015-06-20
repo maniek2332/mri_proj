@@ -19,6 +19,7 @@ pub fn compute(mat : &DMat<f32>, snr: &DMat<f32>, _lpf: f32, modo: i32) -> (DMat
 	let (m2, sigma_n) = em_ml_rice2D::compute(&mat,10, 3);
 	
 	let m1= filter2b::filter_img(&mat, 5, 0.04);
+    println!("M1:\n{:?}\n", m1);
 	
 	let sub = mat.clone().sub(m1.clone());
 	let rn = matlab_fun::abs(&sub);
@@ -26,19 +27,22 @@ pub fn compute(mat : &DMat<f32>, snr: &DMat<f32>, _lpf: f32, modo: i32) -> (DMat
 	let rn_vioz = rn.add(vioz);
 	
 	let l_rn = matrix_math::mat_map(&rn_vioz, |x| x.ln());
+    println!("LRN (G):\n{:?}\n", l_rn);
 	
 	let lpf2 = lpf::lpf2(l_rn, _lpf);
+    println!("LPF2:\n{:?}\n", lpf2);
 	let mapa2 = matrix_math::mat_map(&lpf2, |x| x.exp());
 	
 	//2./sqrt(2).*exp(-psi(1)./2) = 1.8874
 	let const_val: f32 = 1.8874;
-	let mapa_g = mapa2.div(const_val);
+	let mapa_g = matrix_math::mat_map(&mapa2, |x| x * const_val);
 	
 	let mut rn_abs = DMat::new_ones(1,1);
 	
 	if modo == 1 {
 		let temp = mat.clone().sub(m1.clone());
 		rn_abs = matlab_fun::abs(&temp);
+        println!("RN ABS:\n{:?}\n", rn_abs);
 	} else if modo==2{
 		let temp = mat.clone().sub(m2);
 		rn_abs = matlab_fun::abs(&temp);
@@ -49,6 +53,7 @@ pub fn compute(mat : &DMat<f32>, snr: &DMat<f32>, _lpf: f32, modo: i32) -> (DMat
 	let vioz_2 = value_or_zeros(&rn_abs, 0.001);
 	let rn_abs_vioz_2 = rn_abs.add(vioz_2);
 	let l_rn_abs = matrix_math::mat_map(&rn_abs_vioz_2, |x| x.ln());
+    println!("LRN (R):\n{:?}\n", l_rn_abs);
 	let lpf2_abs = lpf::lpf2(l_rn_abs, _lpf);
 	
 	let fc1= correct_rice_gauss::compute(&snr);
@@ -57,7 +62,7 @@ pub fn compute(mat : &DMat<f32>, snr: &DMat<f32>, _lpf: f32, modo: i32) -> (DMat
 	
 	let mapa1 = matrix_math::mat_map(&lpf1_2, |x| x.exp());
 
-	let mapa_r = mapa1.div(const_val);
+	let mapa_r = matrix_math::mat_map(&mapa1, |x| x * const_val);
 	
 	return (mapa_r, mapa_g);
 }
