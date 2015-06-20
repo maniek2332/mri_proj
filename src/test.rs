@@ -9,7 +9,7 @@ use em_ml_rice2D;
 pub fn test_approx1l() {
     println!("Starting test_approx1l");
     let a: DMat<f32> = DMat::new_ones(1,3);
-    let b = approxl1_i0::compute(a);
+    let b = approxl1_i0::compute(&a);
 	matlab_fun::print_matrix(&b);
 }
 
@@ -32,7 +32,7 @@ pub fn test_correct_rice_gauss() {
 
 pub fn test_em_ml_rice2D() {
 	println!("Starting test_em_ml_rice2D");
-	let a : DMat<f32> = DMat::from_elem(1,3, 5.0); 
+	let a : DMat<f32> = DMat::from_elem(3,3, 5.0); 
 	let (b,c) = em_ml_rice2D::compute(&a, 10, 3);
 	
 	println!("b mat");
