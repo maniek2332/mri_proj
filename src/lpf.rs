@@ -2,8 +2,9 @@ extern crate nalgebra as na;
 use std::f32::consts::PI;
 use matrix_math::{sum_vec, mat_map_mut, mat_max};
 use na::{RowSlice, ColSlice};
+use na::Transpose;
 
-fn dct_inplace(y : &mut na::DVec<f32>) {
+pub fn dct_inplace(y : &mut na::DVec<f32>) {
     let x = y.clone();
     for k in 0..x.len() {
         let mut acc = 0f32;
@@ -19,20 +20,31 @@ fn dct_inplace(y : &mut na::DVec<f32>) {
     }
 }
 
-fn idct_inplace(y : &mut na::DVec<f32>) {
+pub fn idct_inplace(y : &mut na::DVec<f32>) {
     let x = y.clone();
 
     for k in 0..x.len() {
         let mut acc = 0f32;
         for n in 1..x.len() {
-            acc += x[n] * (PI * (k as f32 + 0.5f32) * n as f32 * x.len() as f32).cos();
+            acc += x[n] * (PI * (k as f32 + 0.5f32) * n as f32 / x.len() as f32).cos();
         }
         y[k] = x[0] / (x.len() as f32).sqrt() + acc * (2f32 / x.len() as f32).sqrt();
     }
 }
 
-fn dct2(mat_src : &na::DMat<f32>) -> na::DMat<f32>  {
+pub fn dct2(mat_src : &na::DMat<f32>) -> na::DMat<f32>  {
     let mut mat = mat_src.clone();
+    for i in 0..mat.ncols() {
+        let mut slice = mat.col_slice(i, 0, mat.nrows());
+        println!("DCT SLICE COL (1): {:?}", slice);
+        dct_inplace(&mut slice);
+        println!("DCT SLICE COL (2): {:?}", slice);
+        for j in 0..mat.nrows() {
+            mat[(j, i)] = slice[j];
+        }
+        //println!("DCT MAT SLICE UPDATE ():\n{:?}\n", mat);
+    }
+    println!("MID DCT2 MATRIX (1):\n{:?}\n", mat);
     for i in 0..mat.nrows() {
         let mut slice = mat.row_slice(i, 0, mat.ncols());
         dct_inplace(&mut slice);
@@ -40,17 +52,10 @@ fn dct2(mat_src : &na::DMat<f32>) -> na::DMat<f32>  {
             mat[(i, j)] = slice[j];
         }
     }
-    for i in 0..mat.ncols() {
-        let mut slice = mat.col_slice(i, 0, mat.nrows());
-        dct_inplace(&mut slice);
-        for j in 0..mat.nrows() {
-            mat[(j, i)] = slice[j];
-        }
-    }
     mat
 }
 
-fn idct2(mat_src : &na::DMat<f32>) -> na::DMat<f32>  {
+pub fn idct2(mat_src : &na::DMat<f32>) -> na::DMat<f32>  {
     let mut mat = mat_src.clone();
     for i in 0..mat.nrows() {
         let mut slice = mat.row_slice(i, 0, mat.ncols());

@@ -55,6 +55,12 @@ fn save_image(img : &na::DMat<f32>, path : String) {
 }
 
 fn main() {
+    //test::test_dct();
+    //test::test_idct();
+    //test::test_dct2();
+    //test::test_idct2();
+    //test::test_dct2_and_idct2();
+    //test::test_lpf();
 	test::test_rice_homomorf_est();
     let img = load_image("test.csv".to_string());
     let img_f = filter2b::filter_img(&img, 5, 1. / 25.);
