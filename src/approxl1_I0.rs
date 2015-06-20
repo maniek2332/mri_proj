@@ -4,7 +4,7 @@ use std::ops::*;
 use matrix_math;
 use matlab_fun;
 
-pub fn compute(z: DMat<f32>) -> DMat<f32>{
+pub fn compute(z: &DMat<f32>) -> DMat<f32>{
 	let cont: bool = check(1.5, z.as_vec());
 	let z_clone = z.clone();
 

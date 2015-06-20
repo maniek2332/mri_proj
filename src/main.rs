@@ -45,7 +45,7 @@ fn save_image(img : &na::DMat<f32>, path : String) {
     }
 }
 
-fn filter_img(image_src : &na::DMat<f32>, mask_size : usize, mask_val : f32) -> na::DMat<f32> {
+pub fn filter_img(image_src : &na::DMat<f32>, mask_size : usize, mask_val : f32) -> na::DMat<f32> {
     let mut image = image_src.clone();
     assert_eq!(image.nrows(), image.ncols());
     let range = mask_size as i32 / 2;

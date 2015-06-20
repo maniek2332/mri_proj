@@ -128,3 +128,33 @@ pub fn cast_to_f64(mat : &DMat<f32>) -> DMat<f64> {
 	}
 	return result;
 }
+
+pub fn biggest_of_values(mat : &DMat<f32>, value: f32) -> DMat<f32>{
+	let rows_size = mat.nrows();
+	let cols_size = mat.ncols();
+	let mut result : DMat<f32> = DMat::new_zeros(rows_size, cols_size);
+
+	for r in 0..rows_size {
+		for c in 0..cols_size {
+			if mat[(r,c)] < value {
+				result[(r,c)] = value;		
+			} else {
+				result[(r,c)] = mat[(r,c)];
+			}
+		}
+	}
+	return result;
+}
+
+pub fn abs(mat: &DMat<f32>) -> DMat<f32> {
+	let rows_size = mat.nrows();
+	let cols_size = mat.ncols();
+	let mut result : DMat<f32> = DMat::new_zeros(rows_size, cols_size);
+
+	for r in 0..rows_size {
+		for c in 0..cols_size {
+			result[(r,c)] = mat[(r,c)].abs();
+		}
+	}
+	return result;
+}

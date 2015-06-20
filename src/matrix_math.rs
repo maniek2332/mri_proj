@@ -84,3 +84,18 @@ pub fn pow(x: f32, s: i32) -> f32{
   }
   return result;
 }
+
+pub fn matrix_sqrt(mat : &DMat<f32>) -> DMat<f32> {
+	let nrows = mat.nrows();
+	let ncols = mat.ncols();
+	
+	let mut result : DMat<f32> = DMat::new_zeros(nrows, ncols);
+	
+	for r in 0..nrows {
+		for c in 0..ncols {
+			result[(r,c)] = mat[(r,c)].sqrt();
+		}
+	}
+	
+	return result;
+}
