@@ -4,6 +4,7 @@ use approxl1_i0;
 use matlab_fun;
 use correct_rice_gauss;
 use em_ml_rice2D;
+use rice_homomorf_est;
 
 
 pub fn test_approx1l() {
@@ -39,8 +40,11 @@ pub fn test_em_ml_rice2D() {
 	matlab_fun::print_matrix(&b);
 	
 	println!("c mat");
-	matlab_fun::print_matrix(&c);
-	
+	matlab_fun::print_matrix(&c);	
+}
+
+pub fn test_rice_homomorf_est() {
+	println!("Starting test_rice_homomorf_est");
 }
 
 

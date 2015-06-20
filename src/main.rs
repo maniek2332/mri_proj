@@ -16,6 +16,7 @@ mod correct_rice_gauss;
 mod em_ml_rice2D;
 mod filter2b;
 mod config;
+mod rice_homomorf_est;
 
 fn load_image(path : String) -> na::DMat<f32> {
     let mut mat = na::DMat::new_zeros(256, 256);
