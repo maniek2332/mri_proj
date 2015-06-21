@@ -22,9 +22,8 @@ pub fn compute(mat : &DMat<f32>, n : i32, ws : usize) -> (DMat<f32>, DMat<f32>){
 	let mat_to_4_filter = filter2b::filter_img(&mat_to_4, mask_size, mask_value);
 	
 	let mut a_k = compute_a_k(&mat_to_2_filter, &mat_to_4_filter);
-	
 	let mut sigma_k2 = compute_sigma_k(&a_k, &mat_to_2_filter);
-		
+	
 	for _ in 1..n {
 		a_k = compute_next_a_k(&a_k, &mat, &sigma_k2, mask_size, mask_value);
 		sigma_k2 = compute_next_signal_k(&mat, &a_k, mask_size, mask_value);
@@ -55,17 +54,18 @@ fn compute_sigma_k(a_k: &DMat<f32>, mat_to_2_filter: &DMat<f32>) -> DMat<f32> {
 	
 	let d = matlab_fun::biggest_of_values(&c, 0.01);
 	
-	return d.div(0.5);	
+	return d.mul(0.5);	
 }
 
 fn compute_next_a_k(a_k: &DMat<f32>, mat : &DMat<f32>, sigma_k: &DMat<f32>, mask_size: usize, mask_value: f32) -> DMat<f32> {	
 	let a_k_times_mat = matrix_math::mul_matrix_by_matrix_each_value(&a_k, &mat);
 	let ak_div_sigma = matrix_math::div_matrix_by_matrix_each_value(&a_k_times_mat, &sigma_k);
-	let approx = approxl1_i0::compute(&ak_div_sigma);
+	let approx = approxl1_i0::compute(&ak_div_sigma);	
 	let approx_times_mat = matrix_math::mul_matrix_by_matrix_each_value(&approx, &mat); 
-	let filtered = filter2b::filter_img(&approx_times_mat, mask_size, mask_value);
+	let filtered = filter2b::filter_img(&approx_times_mat, mask_size, mask_value);	
+	let new_ak =  matlab_fun::biggest_of_values(&filtered, 0.0);
 	
-	return matlab_fun::biggest_of_values(&filtered, 0.0);
+	return new_ak;
 }
 
 fn compute_next_signal_k(mat : &DMat<f32>, a_k: &DMat<f32>, mask_size: usize, mask_value: f32) -> DMat<f32> {

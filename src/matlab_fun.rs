@@ -39,7 +39,7 @@ pub fn print_matrix(mat: &DMat<f32>) {
    let cols_size = mat.ncols();
    for r in 0..rows_size {
 	for c in 0..cols_size {
-		println!("({}, {}) = {}",r,c,mat[(r,c)]);
+		println!("({}, {}) = {:.*}",r,c,6,mat[(r,c)]);
 	}
    }
 }

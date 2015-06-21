@@ -1,11 +1,12 @@
 extern crate nalgebra as na;
-use na::{DMat};
+use na::{DMat, DVec};
 use std::ops::*;
 use matrix_math;
 use matlab_fun;
+use na::Iterable;
 
 pub fn compute(z: &DMat<f32>) -> DMat<f32>{
-	let cont: bool = check(1.5, z.as_vec());
+	let cont: DVec<f32> = check(1.5, &z);
 	let z_clone = z.clone();
 
 	let z8 = z_clone.mul(8.0);
@@ -15,9 +16,10 @@ pub fn compute(z: &DMat<f32>) -> DMat<f32>{
 	let mn = compute_mn(&z8, &z8_to_2, &z8_to_3);
 	let md = compute_md(&z8, &z8_to_2, &z8_to_3);
 
+
 	let mut m = matrix_math::div_matrix_by_matrix_each_value(&mn, &md);
 	let mut k = Vec::new();
-	if cont {
+	if check_cont(&cont, 1.0) {
 		k = matlab_fun::find_less_than(&z, 1.5);
 		let zk = matlab_fun::select_cells(&z, &k);
 		let besseli1 = matlab_fun::besseli(1, &zk);
@@ -31,20 +33,33 @@ pub fn compute(z: &DMat<f32>) -> DMat<f32>{
   
 	let zeros: Vec<(usize, usize)> = matlab_fun::find_equal(&z, 0.0);
 	for i in 0..zeros.len() {
-		m[k[i]] = 0.0;
+		m[zeros[i]] = 0.0;
 	}
-
 	return m;
 }
 
-fn check(treshold: f32, z: &[f32]) -> bool {
-  for x in z {
-    if x < &treshold {
-      return true;
-    }
-  }
+fn check(treshold: f32, z: &DMat<f32>) -> DVec<f32> {
+	let rows_size = z.nrows();
+	let cols_size = z.ncols();
+	let mut  result: DVec<f32> = DVec::new_zeros(cols_size);
+	
+	for c in 0..cols_size {
+		for r in 0..rows_size {
+			if z[(r,c)] < treshold {
+				result[c] = result[c]  + 1.0;
+			}
+		}
+   }
+  return result;
+}
 
-  return false;
+fn check_cont(cont : &DVec<f32>, value: f32) -> bool {
+	for x in cont.iter() {
+		if x <= &value {
+			return false;
+		}
+	}
+	return true;
 }
 
 fn compute_mn(z8: &DMat<f32>, z8_to_2: &DMat<f32>, z8_to_3: &DMat<f32>) -> DMat<f32> {
@@ -81,11 +96,5 @@ fn compute_md(z8: &DMat<f32>, z8_to_2: &DMat<f32>, z8_to_3: &DMat<f32>) -> DMat<
 	let ones = DMat::new_ones(z8_clone.nrows(), z8_clone.ncols());
 
 	return ones.add(a).add(b).add(c);
-}
-
-fn print_vector(vec : &Vec<(usize, usize)>) {
-	for &(r,c) in vec.iter() {
-		println!("({}, {})", r,c);
-	}
 }
 

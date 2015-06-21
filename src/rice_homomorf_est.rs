@@ -27,10 +27,7 @@ pub fn compute(mat : &DMat<f32>, snr: &DMat<f32>, _lpf: f32, modo: i32) -> (DMat
 	let rn_vioz = rn.add(vioz);
 	
 	let l_rn = matrix_math::mat_map(&rn_vioz, |x| x.ln());
-    println!("LRN (G):\n{:?}\n", l_rn);
-	
 	let lpf2 = lpf::lpf2(l_rn, _lpf);
-    println!("LPF2:\n{:?}\n", lpf2);
 	let mapa2 = matrix_math::mat_map(&lpf2, |x| x.exp());
 	
 	//2./sqrt(2).*exp(-psi(1)./2) = 1.8874
@@ -42,24 +39,22 @@ pub fn compute(mat : &DMat<f32>, snr: &DMat<f32>, _lpf: f32, modo: i32) -> (DMat
 	if modo == 1 {
 		let temp = mat.clone().sub(m1.clone());
 		rn_abs = matlab_fun::abs(&temp);
-        println!("RN ABS:\n{:?}\n", rn_abs);
 	} else if modo==2{
 		let temp = mat.clone().sub(m2);
 		rn_abs = matlab_fun::abs(&temp);
 	} else {
 		rn_abs = matlab_fun::abs(&mat);
 	}
-
+	
 	let vioz_2 = value_or_zeros(&rn_abs, 0.001);
 	let rn_abs_vioz_2 = rn_abs.add(vioz_2);
 	let l_rn_abs = matrix_math::mat_map(&rn_abs_vioz_2, |x| x.ln());
-    println!("LRN (R):\n{:?}\n", l_rn_abs);
 	let lpf2_abs = lpf::lpf2(l_rn_abs, _lpf);
 	
 	let fc1= correct_rice_gauss::compute(&snr);
-	let lpf1 = lpf2.sub(fc1);
-	let lpf1_2 = lpf::lpf2(lpf1,_lpf + 2.0);
-	
+	let lpf1 = lpf2_abs.sub(fc1);
+	let lpf1_2 = lpf::lpf2(lpf1,_lpf + 2.0);		
+		
 	let mapa1 = matrix_math::mat_map(&lpf1_2, |x| x.exp());
 
 	let mapa_r = matrix_math::mat_map(&mapa1, |x| x * const_val);

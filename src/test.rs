@@ -11,9 +11,14 @@ use lpf::{lpf2, dct_inplace, idct_inplace, dct2, idct2};
 
 pub fn test_approx1l() {
     println!("Starting test_approx1l");
-    let a: DMat<f32> = DMat::new_ones(1,3);
+    let a: DMat<f32> = DMat::from_row_vec(2, 2, &[0.6131 , 2.1043, 0.2521, 0.2428]);
+        
     let b = approxl1_i0::compute(&a);
-	matlab_fun::print_matrix(&b);
+	println!("approx result 1 (2):\n{:?}\n", b);
+	
+	let c : DMat<f32> = DMat::from_row_vec(2, 2, &[1.0, 1.4, 0.5, 0.3]); 
+	let d = approxl1_i0::compute(&c);
+	 println!("approx result 2 (2):\n{:?}\n", d);
 }
 
 pub fn test_besseli() {
@@ -35,27 +40,27 @@ pub fn test_correct_rice_gauss() {
 
 pub fn test_em_ml_rice2D() {
 	println!("Starting test_em_ml_rice2D");
-	let a : DMat<f32> = DMat::from_elem(3,3, 5.0); 
+	let a : DMat<f32> = DMat::from_row_vec(2, 2, &[1., 2., 0.5, 0.3]); 
 	let (b,c) = em_ml_rice2D::compute(&a, 10, 3);
 	
-	println!("b mat");
-	matlab_fun::print_matrix(&b);
-	
-	println!("c mat");
-	matlab_fun::print_matrix(&c);	
+	println!("test_em_ml_rice2D ak (2):\n{:?}\n", &b);
+	println!("test_em_ml_rice2D sigma (2):\n{:?}\n", &c);
 }
 
 pub fn test_rice_homomorf_est() {
 	println!("Starting test_rice_homomorf_est");
 	let a : DMat<f32> = DMat::from_row_vec(2, 2, &[1., 2., 0.5, 0.3]); 
-	
 	let (b,c) = rice_homomorf_est::compute_for_uknown_snr(&a, 3.4, 2);
 	
-	println!("b mat");
-	matlab_fun::print_matrix(&b);
+	println!("test_rice_homomorf_est 1 mapa_r (2):\n{:?}\n", &b);
+	println!("test_rice_homomorf_est 1 mapa_g (2):\n{:?}\n", &c);
 	
-	println!("c mat");
-	matlab_fun::print_matrix(&c);
+	let d : DMat<f32> = DMat::from_row_vec(2, 2, &[1., 2., 0.5, 0.3]); 
+	let snr: DMat<f32> = DMat::new_zeros(2,2);
+	let (e,f) = rice_homomorf_est::compute(&a, &snr, 3.4, 2);
+	
+	println!("test_rice_homomorf_est 2 mapa_r (2):\n{:?}\n", &e);
+	println!("test_rice_homomorf_est 2 mapa_g (2):\n{:?}\n", &f);
 }
 
 pub fn test_lpf() {

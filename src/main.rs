@@ -62,6 +62,8 @@ fn main() {
     //test::test_dct2_and_idct2();
     //test::test_lpf();
     test::test_rice_homomorf_est();
+	//test::test_em_ml_rice2D();
+	//test::test_approx1l();
     //let img = load_image("test.csv".to_string());
     //let img_f = filter2b::filter_img(&img, 5, 1. / 25.);
     //println!("IMG1: {:?}", img[(0, 0)]);
