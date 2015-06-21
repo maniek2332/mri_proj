@@ -24,7 +24,7 @@ pub fn compute(mat : &DMat<f64>, n : i32, ws : usize) -> (DMat<f64>, DMat<f64>){
 	let mut a_k = compute_a_k(&mat_to_2_filter, &mat_to_4_filter);
 	let mut sigma_k2 = compute_sigma_k(&a_k, &mat_to_2_filter);
 	
-	for _ in 1..n {
+	for _ in 0..n {
 		a_k = compute_next_a_k(&a_k, &mat, &sigma_k2, mask_size, mask_value);
 		sigma_k2 = compute_next_signal_k(&mat, &a_k, mask_size, mask_value);
 	}

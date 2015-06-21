@@ -23,19 +23,16 @@ MR_noisy =  csvread('MR_noisy.csv');
 % Ponizej nalezy odkomentowac odpowiedni wariant algorytmu 
 
 % estymacja EM przy znanym SNR
-[MapaR, MapaG] = rice_homomorf_est(MR_noisy, MR_SNR, 3.4, 1);
+[MapaR, MapaG] = rice_homomorf_est(MR_noisy, MR_SNR, 3.4, 2);
 
 % estymacja EM przy nieznanym SNR
 %[MapaR, MapaG] = rice_homomorf_est(MR_noisy, 0, 3.4, 2);
-%[MR_Rician_Map, MR_Gaussian_Map] = rice_homomorf_est(MR_noisy, 0, 3.4, 2);
 
 % estymacja local mean przy znanym SNR
 %[MapaR, MapaG] = rice_homomorf_est(MR_noisy, MR_SNR, 3.4, 1);
 
 % estymacja local mean przy nieznanym SNR
 %[MapaR, MapaG] = rice_homomorf_est(MR_noisy, 0, 3.4, 1);
-
-
 
 % 1) Porownanie wizualne estymowanych map
 figure(1), imshow([MapaG, MR_Gaussian_Map, MapaR, MR_Rician_Map], []); colorbar; colormap(jet);
@@ -46,6 +43,12 @@ figure(2), imshow(abs([MapaG-Mapa, MR_Gaussian_Map-Mapa, MapaR-Mapa, MR_Rician_M
 % 3) Porownanie wizualne roznicy miedzy estymowanymi mapami
 figure(3), imshow(abs([MapaG - MR_Gaussian_Map, MapaR - MR_Rician_Map]), []); colorbar; colormap(jet);
 
+MR_Gaussian_Map = double(MR_Gaussian_Map);
+MR_Rician_Map = double(MR_Rician_Map);
+MR_SNR =  double(MR_SNR);
+MR_noisy =  double(MR_noisy);
+MapaR = double(MapaR);
+MapaG = double(MapaG);
 
 % 4) Wyznaczenie bledow
 RE = zeros(1, 4);

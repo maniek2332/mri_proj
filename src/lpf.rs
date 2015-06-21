@@ -79,21 +79,21 @@ fn gaussian_filter(rows : usize, cols : usize, sigma : f64) -> na::DMat<f64> {
     assert_eq!(cols % 2, 0);
     let mut mat = na::DMat::new_zeros(rows, cols);
     for y in 0..rows {
-        let yv = y as f64 + 0.5;
+        let yv = y as f64 + 0.5f64;
         for x in 0..cols {
-            let xv = x as f64 + 0.5;
+            let xv = x as f64 + 0.5f64;
             mat[(y, x)] = (
-                (-(xv * xv + yv * yv) / (2. * sigma * sigma)).exp()
+                (-(xv * xv + yv * yv) / (2f64 * sigma * sigma)).exp()
                 );
         }
     }
     let mat_sum = sum_vec(&mat.clone().to_vec(), &0.);
-    mat = mat_map_mut(mat, |x| x / (mat_sum * 4.));
+    mat = mat_map_mut(mat, |x| x / (mat_sum * 4.0f64));
     mat
 }
 
 pub fn lpf2(mat : na::DMat<f64>, sigma : f64) -> na::DMat<f64> {
-    let mut gauss_mat = gaussian_filter(mat.nrows(), mat.ncols(), sigma * 2.);
+    let mut gauss_mat = gaussian_filter(mat.nrows(), mat.ncols(), sigma * 2f64);
     let gauss_max = mat_max(&gauss_mat);
     gauss_mat = mat_map_mut(gauss_mat, |x| x / gauss_max);
     println!("TEST IMG:\n{:?}\n", mat);

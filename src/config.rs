@@ -7,6 +7,7 @@ pub static CONFIG : Config = Config {
 	lpf_f_SNR: 1.2,
 	lpf_f_Rice: 5.4,
     input_filename: "MR_noisy.csv",
+    input_snr: "MR_SNR.csv",
 	output_filename_Gaussian: "MR_Gaussian_Map.csv",
 	output_filename_Rician: "MR_Rician_Map.csv"
 };
@@ -19,6 +20,7 @@ pub struct Config {
 	pub lpf_f_SNR: f64,
 	pub lpf_f_Rice: f64,
     pub input_filename: &'static str,
+    pub input_snr: &'static str,
 	pub output_filename_Gaussian: &'static str,
 	pub output_filename_Rician: &'static str
 }

@@ -31,7 +31,7 @@ pub fn compute(mat : &DMat<f64>, snr: &DMat<f64>, _lpf: f64, modo: i32) -> (DMat
 	let mapa2 = matrix_math::mat_map(&lpf2, |x| x.exp());
 	
 	//2./sqrt(2).*exp(-psi(1)./2) = 1.8874
-	let const_val: f64 = 1.8874;
+	let const_val: f64 = 1.887364521225403;
 	let mapa_g = matrix_math::mat_map(&mapa2, |x| x * const_val);
 	
 	let mut rn_abs = DMat::new_ones(1,1);

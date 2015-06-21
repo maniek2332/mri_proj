@@ -57,8 +57,12 @@ fn save_image(img : &na::DMat<f64>, path : String) {
 fn run() {
     let ref config = config::CONFIG;
     let mr_noisy = load_image(config.input_filename.to_string());
+    let mr_snr = load_image(config.input_snr.to_string());
     println!("Starting algorithm...");
-	let (mr_rice_map, mr_gauss_map) = rice_homomorf_est::compute_for_uknown_snr(&mr_noisy, 3.4, 1);
+    let (mr_rice_map, mr_gauss_map) = rice_homomorf_est::compute(&mr_noisy, &mr_snr, 3.4, 2);
+    //let (mr_rice_map, mr_gauss_map) = rice_homomorf_est::compute_for_uknown_snr(&mr_noisy, 3.4, 2);
+    //let (mr_rice_map, mr_gauss_map) = rice_homomorf_est::compute(&mr_noisy, &mr_snr, 3.4, 1);
+    //let (mr_rice_map, mr_gauss_map) = rice_homomorf_est::compute_for_uknown_snr(&mr_noisy, 3.4, 1);
     println!("Completed, saving results");
     save_image(&mr_rice_map, config.output_filename_Rician.to_string());
     save_image(&mr_gauss_map, config.output_filename_Gaussian.to_string());
