@@ -35,7 +35,7 @@ fn load_image(path : String) -> na::DMat<f64> {
     for line in br.lines().map(|line| line.unwrap()) {
         let mut col = 0;
         for num_str in line.split(",") {
-            let num = num_str.parse::<f64>().unwrap();
+            let num = num_str.trim().parse::<f64>().unwrap();
             mat[(row, col)] = num;
             col += 1;
         }
