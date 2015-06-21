@@ -13,6 +13,8 @@ Omega_delta = sum(mask(:));
 %% B) wczytanie estymowanych map i mapy SNR + estymacja
 MR_Gaussian_Map = csvread('MR_Gaussian_Map.csv');
 MR_Rician_Map = csvread('MR_Rician_Map.csv');
+%MR_Gaussian_Map = csvread('MR_Gaussian_Map.old.csv');
+%MR_Rician_Map = csvread('MR_Rician_Map.old.csv');
 MR_SNR =  csvread('MR_SNR.csv');
 MR_noisy =  csvread('MR_noisy.csv');
 
@@ -21,10 +23,11 @@ MR_noisy =  csvread('MR_noisy.csv');
 % Ponizej nalezy odkomentowac odpowiedni wariant algorytmu 
 
 % estymacja EM przy znanym SNR
-[MapaR, MapaG] = rice_homomorf_est(MR_noisy, MR_SNR, 3.4, 2);
+[MapaR, MapaG] = rice_homomorf_est(MR_noisy, MR_SNR, 3.4, 1);
 
 % estymacja EM przy nieznanym SNR
 %[MapaR, MapaG] = rice_homomorf_est(MR_noisy, 0, 3.4, 2);
+%[MR_Rician_Map, MR_Gaussian_Map] = rice_homomorf_est(MR_noisy, 0, 3.4, 2);
 
 % estymacja local mean przy znanym SNR
 %[MapaR, MapaG] = rice_homomorf_est(MR_noisy, MR_SNR, 3.4, 1);

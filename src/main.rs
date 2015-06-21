@@ -4,7 +4,7 @@ use std::io::BufReader;
 use std::io::BufRead;
 use std::io::Write;
 use std::cmp::{min, max};
-use std::f32::consts::PI;
+use std::f64::consts::PI;
 use std::ops::Add;
 use std::vec::Vec;
 use na::{RowSlice, ColSlice};
@@ -22,12 +22,12 @@ mod lpf;
 
 use lpf::lpf2;
 
-fn load_image(path : String) -> na::DMat<f32> {
+fn load_image(path : String) -> na::DMat<f64> {
     let mut mat = na::DMat::new_zeros(256, 256);
 
     let file = match File::open(path) {
         Ok(file) => file,
-        Err(..)  => panic!("panic"),
+        Err(..)  => panic!("Cannot open file"),
     };
     let br = BufReader::new(&file);
 
@@ -35,7 +35,7 @@ fn load_image(path : String) -> na::DMat<f32> {
     for line in br.lines().map(|line| line.unwrap()) {
         let mut col = 0;
         for num_str in line.split(",") {
-            let num = num_str.parse::<f32>().unwrap();
+            let num = num_str.parse::<f64>().unwrap();
             mat[(row, col)] = num;
             col += 1;
         }
@@ -44,7 +44,7 @@ fn load_image(path : String) -> na::DMat<f32> {
     mat
 }
 
-fn save_image(img : &na::DMat<f32>, path : String) {
+fn save_image(img : &na::DMat<f64>, path : String) {
     let mut file = File::create(path).unwrap();
     for i in 0..img.nrows() {
         for j in 0..img.ncols() - 1 {
@@ -54,16 +54,26 @@ fn save_image(img : &na::DMat<f32>, path : String) {
     }
 }
 
+fn run() {
+    let ref config = config::CONFIG;
+    let mr_noisy = load_image(config.input_filename.to_string());
+    println!("Starting algorithm...");
+	let (mr_rice_map, mr_gauss_map) = rice_homomorf_est::compute_for_uknown_snr(&mr_noisy, 3.4, 1);
+    println!("Completed, saving results");
+    save_image(&mr_rice_map, config.output_filename_Rician.to_string());
+    save_image(&mr_gauss_map, config.output_filename_Gaussian.to_string());
+}
+
 fn main() {
+    run();
+
     //test::test_dct();
     //test::test_idct();
     //test::test_dct2();
     //test::test_idct2();
     //test::test_dct2_and_idct2();
     //test::test_lpf();
-    test::test_rice_homomorf_est();
-	//test::test_em_ml_rice2D();
-	//test::test_approx1l();
+    //test::test_rice_homomorf_est();
     //let img = load_image("test.csv".to_string());
     //let img_f = filter2b::filter_img(&img, 5, 1. / 25.);
     //println!("IMG1: {:?}", img[(0, 0)]);
@@ -81,7 +91,7 @@ fn main() {
     //let test_img_lpf = lpf2(test_img, 4.8);
     //println!("TEST LPF:\n{:?}\n", test_img_lpf);
     //let mut test_vec = na::DVec::from_elem(5, 25.);
-    ////test_vec[1] = 23f32;
+    ////test_vec[1] = 23f64;
     //println!("TEST VEC: {:?}", test_vec);
     //dct_inplace(&mut test_vec);
     //println!("VEC DCT: {:?}", test_vec);

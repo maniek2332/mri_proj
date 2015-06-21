@@ -5,8 +5,8 @@ use matrix_math;
 use matlab_fun;
 use na::Iterable;
 
-pub fn compute(z: &DMat<f32>) -> DMat<f32>{
-	let cont: DVec<f32> = check(1.5, &z);
+pub fn compute(z: &DMat<f64>) -> DMat<f64>{
+	let cont: DVec<f64> = check(1.5, &z);
 	let z_clone = z.clone();
 
 	let z8 = z_clone.mul(8.0);
@@ -38,10 +38,10 @@ pub fn compute(z: &DMat<f32>) -> DMat<f32>{
 	return m;
 }
 
-fn check(treshold: f32, z: &DMat<f32>) -> DVec<f32> {
+fn check(treshold: f64, z: &DMat<f64>) -> DVec<f64> {
 	let rows_size = z.nrows();
 	let cols_size = z.ncols();
-	let mut  result: DVec<f32> = DVec::new_zeros(cols_size);
+	let mut  result: DVec<f64> = DVec::new_zeros(cols_size);
 	
 	for c in 0..cols_size {
 		for r in 0..rows_size {
@@ -53,7 +53,7 @@ fn check(treshold: f32, z: &DMat<f32>) -> DVec<f32> {
   return result;
 }
 
-fn check_cont(cont : &DVec<f32>, value: f32) -> bool {
+fn check_cont(cont : &DVec<f64>, value: f64) -> bool {
 	for x in cont.iter() {
 		if x <= &value {
 			return false;
@@ -62,7 +62,7 @@ fn check_cont(cont : &DVec<f32>, value: f32) -> bool {
 	return true;
 }
 
-fn compute_mn(z8: &DMat<f32>, z8_to_2: &DMat<f32>, z8_to_3: &DMat<f32>) -> DMat<f32> {
+fn compute_mn(z8: &DMat<f64>, z8_to_2: &DMat<f64>, z8_to_3: &DMat<f64>) -> DMat<f64> {
    let z8_clone = z8.clone();
   //Mn=1-a-b-c
   
@@ -80,7 +80,7 @@ fn compute_mn(z8: &DMat<f32>, z8_to_2: &DMat<f32>, z8_to_3: &DMat<f32>) -> DMat<
   return ones.sub(a).sub(b).sub(c);
 }
 
-fn compute_md(z8: &DMat<f32>, z8_to_2: &DMat<f32>, z8_to_3: &DMat<f32>) -> DMat<f32> {
+fn compute_md(z8: &DMat<f64>, z8_to_2: &DMat<f64>, z8_to_3: &DMat<f64>) -> DMat<f64> {
 	let z8_clone = z8.clone();
 	//Md =1+a+b+c;
 	

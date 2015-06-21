@@ -85,9 +85,9 @@ end
 
 %Homomorfic filtering-------------------
 %Gauss----------------------
-Rn=abs(In-M1);
-lRn=log(Rn.*(Rn~=0)+0.001.*(Rn==0));
-LPF2=lpf((lRn),LPF);
+Rn=abs(In-M1)
+lRn=log(Rn.*(Rn~=0)+0.001.*(Rn==0))
+LPF2=lpf((lRn),LPF)
 Mapa2=exp(LPF2);
 MapaG=Mapa2.*2./sqrt(2).*exp(-psi(1)./2);
 
@@ -100,10 +100,10 @@ else
     LocalMean=0;
 end
 
-Rn=abs(In-LocalMean);
-lRn=log(Rn.*(Rn~=0)+0.001.*(Rn==0));
+Rn=abs(In-LocalMean)
+lRn=log(Rn.*(Rn~=0)+0.001.*(Rn==0))
 LPF2=lpf((lRn),LPF);
-Fc1=correct_rice_gauss(SNR);
+Fc1=correct_rice_gauss(SNR)
 LPF1=LPF2-Fc1;
 LPF1=lpf((LPF1),LPF+2,2);
 Mapa1=exp(LPF1);

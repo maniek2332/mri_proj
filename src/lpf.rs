@@ -1,38 +1,38 @@
 extern crate nalgebra as na;
-use std::f32::consts::PI;
+use std::f64::consts::PI;
 use matrix_math::{sum_vec, mat_map_mut, mat_max};
 use na::{RowSlice, ColSlice};
 use na::Transpose;
 
-pub fn dct_inplace(y : &mut na::DVec<f32>) {
+pub fn dct_inplace(y : &mut na::DVec<f64>) {
     let x = y.clone();
     for k in 0..x.len() {
-        let mut acc = 0f32;
+        let mut acc = 0f64;
         for n in 0..x.len() {
-            acc += x[n] * (PI * (k as f32) * (2f32 * (n as f32) + 1f32) / (2f32 * (x.len() as f32))).cos();
+            acc += x[n] * (PI * (k as f64) * (2f64 * (n as f64) + 1f64) / (2f64 * (x.len() as f64))).cos();
         }
-        y[k] = acc * 2f32;
+        y[k] = acc * 2f64;
         if k == 0 {
-            y[k] = y[k] * (1f32/(4f32 * x.len() as f32)).sqrt();
+            y[k] = y[k] * (1f64/(4f64 * x.len() as f64)).sqrt();
         } else {
-            y[k] = y[k] * (1f32/(2f32 * x.len() as f32)).sqrt();
+            y[k] = y[k] * (1f64/(2f64 * x.len() as f64)).sqrt();
         }
     }
 }
 
-pub fn idct_inplace(y : &mut na::DVec<f32>) {
+pub fn idct_inplace(y : &mut na::DVec<f64>) {
     let x = y.clone();
 
     for k in 0..x.len() {
-        let mut acc = 0f32;
+        let mut acc = 0f64;
         for n in 1..x.len() {
-            acc += x[n] * (PI * (k as f32 + 0.5f32) * n as f32 / x.len() as f32).cos();
+            acc += x[n] * (PI * (k as f64 + 0.5f64) * n as f64 / x.len() as f64).cos();
         }
-        y[k] = x[0] / (x.len() as f32).sqrt() + acc * (2f32 / x.len() as f32).sqrt();
+        y[k] = x[0] / (x.len() as f64).sqrt() + acc * (2f64 / x.len() as f64).sqrt();
     }
 }
 
-pub fn dct2(mat_src : &na::DMat<f32>) -> na::DMat<f32>  {
+pub fn dct2(mat_src : &na::DMat<f64>) -> na::DMat<f64>  {
     let mut mat = mat_src.clone();
     for i in 0..mat.ncols() {
         let mut slice = mat.col_slice(i, 0, mat.nrows());
@@ -55,7 +55,7 @@ pub fn dct2(mat_src : &na::DMat<f32>) -> na::DMat<f32>  {
     mat
 }
 
-pub fn idct2(mat_src : &na::DMat<f32>) -> na::DMat<f32>  {
+pub fn idct2(mat_src : &na::DMat<f64>) -> na::DMat<f64>  {
     let mut mat = mat_src.clone();
     for i in 0..mat.nrows() {
         let mut slice = mat.row_slice(i, 0, mat.ncols());
@@ -74,14 +74,14 @@ pub fn idct2(mat_src : &na::DMat<f32>) -> na::DMat<f32>  {
     mat
 }
 
-fn gaussian_filter(rows : usize, cols : usize, sigma : f32) -> na::DMat<f32> {
+fn gaussian_filter(rows : usize, cols : usize, sigma : f64) -> na::DMat<f64> {
     assert_eq!(rows % 2, 0);
     assert_eq!(cols % 2, 0);
     let mut mat = na::DMat::new_zeros(rows, cols);
     for y in 0..rows {
-        let yv = y as f32 + 0.5;
+        let yv = y as f64 + 0.5;
         for x in 0..cols {
-            let xv = x as f32 + 0.5;
+            let xv = x as f64 + 0.5;
             mat[(y, x)] = (
                 (-(xv * xv + yv * yv) / (2. * sigma * sigma)).exp()
                 );
@@ -92,7 +92,7 @@ fn gaussian_filter(rows : usize, cols : usize, sigma : f32) -> na::DMat<f32> {
     mat
 }
 
-pub fn lpf2(mat : na::DMat<f32>, sigma : f32) -> na::DMat<f32> {
+pub fn lpf2(mat : na::DMat<f64>, sigma : f64) -> na::DMat<f64> {
     let mut gauss_mat = gaussian_filter(mat.nrows(), mat.ncols(), sigma * 2.);
     let gauss_max = mat_max(&gauss_mat);
     gauss_mat = mat_map_mut(gauss_mat, |x| x / gauss_max);

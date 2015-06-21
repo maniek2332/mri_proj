@@ -57,7 +57,7 @@ elseif MODO==2
         If=real(idct(lRnF2));
 
     else %2D
-        lRnF=dct2(I)
+        lRnF=dct2(I);
         %Filtering
         lRnF2=lRnF.*h;
         If=real(idct2(lRnF2));

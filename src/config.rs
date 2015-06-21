@@ -15,9 +15,9 @@ pub struct Config {
 	pub ex_filter_type: i32,
 	pub ex_window_size: i32,
 	pub ex_iterations: i32,
-	pub lpf_f: f32,
-	pub lpf_f_SNR: f32,
-	pub lpf_f_Rice: f32,
+	pub lpf_f: f64,
+	pub lpf_f_SNR: f64,
+	pub lpf_f_Rice: f64,
     pub input_filename: &'static str,
 	pub output_filename_Gaussian: &'static str,
 	pub output_filename_Rician: &'static str

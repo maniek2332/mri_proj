@@ -2,7 +2,7 @@ extern crate nalgebra as na;
 use na::{DMat};
 use std::ops::*;
 
-pub fn find_less_than(mat: &DMat<f32>, value: f32) -> Vec<(usize, usize)> {
+pub fn find_less_than(mat: &DMat<f64>, value: f64) -> Vec<(usize, usize)> {
    let rows_size = mat.nrows();
    let cols_size = mat.ncols();
    let mut result: Vec<(usize, usize)> = Vec::new();
@@ -18,7 +18,7 @@ pub fn find_less_than(mat: &DMat<f32>, value: f32) -> Vec<(usize, usize)> {
   return result;	
 }
 
-pub fn find_equal(mat: &DMat<f32>, value: f32) -> Vec<(usize, usize)> {
+pub fn find_equal(mat: &DMat<f64>, value: f64) -> Vec<(usize, usize)> {
    let rows_size = mat.nrows();
    let cols_size = mat.ncols();
    let mut result: Vec<(usize, usize)> = Vec::new();
@@ -34,7 +34,7 @@ pub fn find_equal(mat: &DMat<f32>, value: f32) -> Vec<(usize, usize)> {
   return result;	
 }
 
-pub fn print_matrix(mat: &DMat<f32>) {
+pub fn print_matrix(mat: &DMat<f64>) {
    let rows_size = mat.nrows();
    let cols_size = mat.ncols();
    for r in 0..rows_size {
@@ -45,8 +45,8 @@ pub fn print_matrix(mat: &DMat<f32>) {
 }
 
 //to zwróci macierz 1xN gdzie n to ilosc indeksow
-pub fn select_cells(mat : &DMat<f32>, indexes: &Vec<(usize, usize)>) -> DMat<f32> {
-   let mut result: DMat<f32> = DMat::new_zeros(1, indexes.len());
+pub fn select_cells(mat : &DMat<f64>, indexes: &Vec<(usize, usize)>) -> DMat<f64> {
+   let mut result: DMat<f64> = DMat::new_zeros(1, indexes.len());
  
    for i in 0..indexes.len() {
 		result[(0, i)] = mat[indexes[i]];
@@ -56,10 +56,10 @@ pub fn select_cells(mat : &DMat<f32>, indexes: &Vec<(usize, usize)>) -> DMat<f32
 }
 
 
-pub fn besseli(nu : usize, mat : &DMat<f32>) -> DMat<f32>{
+pub fn besseli(nu : usize, mat : &DMat<f64>) -> DMat<f64>{
    let rows_size = mat.nrows();
    let cols_size = mat.ncols();
-   let mut result: DMat<f32> = DMat::new_zeros(rows_size, cols_size);
+   let mut result: DMat<f64> = DMat::new_zeros(rows_size, cols_size);
 
    for r in 0..rows_size {
 	for c in 0..cols_size {
@@ -70,7 +70,7 @@ pub fn besseli(nu : usize, mat : &DMat<f32>) -> DMat<f32>{
   return result;
 }
 
-fn besseli_for_value(nu : usize, x : f32) -> f32 {
+fn besseli_for_value(nu : usize, x : f64) -> f64 {
 	let powers;
 	let denominators;
 	
@@ -85,9 +85,9 @@ fn besseli_for_value(nu : usize, x : f32) -> f32 {
 	return compute_besseli(&powers, &denominators);
 }
 
-pub fn next_powers(x: f32, from: i32, to: i32, step: i32) -> Vec<f32>{
-  let mut vec: Vec<f32> = Vec::new();
-  let mut result : f32 = 1.0;	
+pub fn next_powers(x: f64, from: i32, to: i32, step: i32) -> Vec<f64>{
+  let mut vec: Vec<f64> = Vec::new();
+  let mut result : f64 = 1.0;	
   let mut c = 1;
   let end = to + 1;
   if from == 0 {
@@ -106,8 +106,8 @@ pub fn next_powers(x: f32, from: i32, to: i32, step: i32) -> Vec<f32>{
   return vec;
 }
 
-fn compute_besseli(powers: &Vec<f32>, denominators: &[f32]) -> f32 {
-	let mut result : f32 = 0.0;
+fn compute_besseli(powers: &Vec<f64>, denominators: &[f64]) -> f64 {
+	let mut result : f64 = 0.0;
 	
 	for i in  0..powers.len() {
 		result = result + powers[i]/denominators[i];
@@ -116,7 +116,7 @@ fn compute_besseli(powers: &Vec<f32>, denominators: &[f32]) -> f32 {
 	return result;
 }
 
-pub fn cast_to_f64(mat : &DMat<f32>) -> DMat<f64> {
+pub fn cast_to_f64(mat : &DMat<f64>) -> DMat<f64> {
 	let rows_size = mat.nrows();
 	let cols_size = mat.ncols();
 	let mut result : DMat<f64> = DMat::new_zeros(rows_size, cols_size);
@@ -129,10 +129,10 @@ pub fn cast_to_f64(mat : &DMat<f32>) -> DMat<f64> {
 	return result;
 }
 
-pub fn biggest_of_values(mat : &DMat<f32>, value: f32) -> DMat<f32>{
+pub fn biggest_of_values(mat : &DMat<f64>, value: f64) -> DMat<f64>{
 	let rows_size = mat.nrows();
 	let cols_size = mat.ncols();
-	let mut result : DMat<f32> = DMat::new_zeros(rows_size, cols_size);
+	let mut result : DMat<f64> = DMat::new_zeros(rows_size, cols_size);
 
 	for r in 0..rows_size {
 		for c in 0..cols_size {
@@ -146,10 +146,10 @@ pub fn biggest_of_values(mat : &DMat<f32>, value: f32) -> DMat<f32>{
 	return result;
 }
 
-pub fn abs(mat: &DMat<f32>) -> DMat<f32> {
+pub fn abs(mat: &DMat<f64>) -> DMat<f64> {
 	let rows_size = mat.nrows();
 	let cols_size = mat.ncols();
-	let mut result : DMat<f32> = DMat::new_zeros(rows_size, cols_size);
+	let mut result : DMat<f64> = DMat::new_zeros(rows_size, cols_size);
 
 	for r in 0..rows_size {
 		for c in 0..cols_size {

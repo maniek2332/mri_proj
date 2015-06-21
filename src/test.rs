@@ -11,28 +11,28 @@ use lpf::{lpf2, dct_inplace, idct_inplace, dct2, idct2};
 
 pub fn test_approx1l() {
     println!("Starting test_approx1l");
-    let a: DMat<f32> = DMat::from_row_vec(2, 2, &[0.6131 , 2.1043, 0.2521, 0.2428]);
+    let a: DMat<f64> = DMat::from_row_vec(2, 2, &[0.6131 , 2.1043, 0.2521, 0.2428]);
         
     let b = approxl1_i0::compute(&a);
 	println!("approx result 1 (2):\n{:?}\n", b);
 	
-	let c : DMat<f32> = DMat::from_row_vec(2, 2, &[1.0, 1.4, 0.5, 0.3]); 
+	let c : DMat<f64> = DMat::from_row_vec(2, 2, &[1.0, 1.4, 0.5, 0.3]); 
 	let d = approxl1_i0::compute(&c);
 	 println!("approx result 2 (2):\n{:?}\n", d);
 }
 
 pub fn test_besseli() {
 	println!("Starting test_besseli");
-	let a: DMat<f32> = DMat::new_ones(1,3);
+	let a: DMat<f64> = DMat::new_ones(1,3);
 	
-	let b: DMat<f32> = matlab_fun::besseli(1, &a);
+	let b: DMat<f64> = matlab_fun::besseli(1, &a);
 	matlab_fun::print_matrix(&b);
 }
 
 pub fn test_correct_rice_gauss() {
 	println!("Starting test_correct_rice_gauss");
 	
-	let a: DMat<f32> = DMat::from_elem(1,3, 2.0);
+	let a: DMat<f64> = DMat::from_elem(1,3, 2.0);
 	
 	let b = correct_rice_gauss::compute(&a);
 	matlab_fun::print_matrix(&b);
@@ -40,7 +40,7 @@ pub fn test_correct_rice_gauss() {
 
 pub fn test_em_ml_rice2D() {
 	println!("Starting test_em_ml_rice2D");
-	let a : DMat<f32> = DMat::from_row_vec(2, 2, &[1., 2., 0.5, 0.3]); 
+	let a : DMat<f64> = DMat::from_row_vec(2, 2, &[1., 2., 0.5, 0.3]); 
 	let (b,c) = em_ml_rice2D::compute(&a, 10, 3);
 	
 	println!("test_em_ml_rice2D ak (2):\n{:?}\n", &b);
@@ -49,14 +49,14 @@ pub fn test_em_ml_rice2D() {
 
 pub fn test_rice_homomorf_est() {
 	println!("Starting test_rice_homomorf_est");
-	let a : DMat<f32> = DMat::from_row_vec(2, 2, &[1., 2., 0.5, 0.3]); 
+	let a : DMat<f64> = DMat::from_row_vec(2, 2, &[1., 2., 0.5, 0.3]); 
 	let (b,c) = rice_homomorf_est::compute_for_uknown_snr(&a, 3.4, 2);
 	
 	println!("test_rice_homomorf_est 1 mapa_r (2):\n{:?}\n", &b);
 	println!("test_rice_homomorf_est 1 mapa_g (2):\n{:?}\n", &c);
 	
-	let d : DMat<f32> = DMat::from_row_vec(2, 2, &[1., 2., 0.5, 0.3]); 
-	let snr: DMat<f32> = DMat::new_zeros(2,2);
+	let d : DMat<f64> = DMat::from_row_vec(2, 2, &[1., 2., 0.5, 0.3]); 
+	let snr: DMat<f64> = DMat::new_zeros(2,2);
 	let (e,f) = rice_homomorf_est::compute(&a, &snr, 3.4, 2);
 	
 	println!("test_rice_homomorf_est 2 mapa_r (2):\n{:?}\n", &e);
