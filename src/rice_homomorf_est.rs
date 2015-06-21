@@ -19,7 +19,7 @@ pub fn compute(mat : &DMat<f64>, snr: &DMat<f64>, _lpf: f64, modo: i32) -> (DMat
 	let (m2, sigma_n) = em_ml_rice2D::compute(&mat,10, 3);
 	
 	let m1= filter2b::filter_img(&mat, 5, 0.04);
-    println!("M1:\n{:?}\n", m1);
+    //println!("M1:\n{:?}\n", m1);
 	
 	let sub = mat.clone().sub(m1.clone());
 	let rn = matlab_fun::abs(&sub);

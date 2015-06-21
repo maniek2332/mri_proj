@@ -1,13 +1,4 @@
 extern crate nalgebra as na;
-use std::fs::File;
-use std::io::BufReader;
-use std::io::BufRead;
-use std::io::Write;
-use std::cmp::{min, max};
-use std::f64::consts::PI;
-use std::ops::Add;
-use std::vec::Vec;
-use na::{RowSlice, ColSlice};
 
 mod approxl1_i0;
 mod matrix_math;
@@ -19,53 +10,38 @@ mod filter2b;
 mod config;
 mod rice_homomorf_est;
 mod lpf;
+mod utils;
 
-use lpf::lpf2;
-
-fn load_image(path : String) -> na::DMat<f64> {
-    let mut mat = na::DMat::new_zeros(256, 256);
-
-    let file = match File::open(path) {
-        Ok(file) => file,
-        Err(..)  => panic!("Cannot open file"),
-    };
-    let br = BufReader::new(&file);
-
-    let mut row = 0;
-    for line in br.lines().map(|line| line.unwrap()) {
-        let mut col = 0;
-        for num_str in line.split(",") {
-            let num = num_str.trim().parse::<f64>().unwrap();
-            mat[(row, col)] = num;
-            col += 1;
-        }
-        row += 1;
-    }
-    mat
-}
-
-fn save_image(img : &na::DMat<f64>, path : String) {
-    let mut file = File::create(path).unwrap();
-    for i in 0..img.nrows() {
-        for j in 0..img.ncols() - 1 {
-            write!(file, "{},", img[(i, j)]);
-        }
-        write!(file, "{}\n", img[(i, img.ncols() - 1)]);
-    }
-}
+use utils::{load_image, save_image};
 
 fn run() {
-    let ref config = config::CONFIG;
+    let ref config = config::load_config();
     let mr_noisy = load_image(config.input_filename.to_string());
     let mr_snr = load_image(config.input_snr.to_string());
     println!("Starting algorithm...");
-    let (mr_rice_map, mr_gauss_map) = rice_homomorf_est::compute(&mr_noisy, &mr_snr, 3.4, 2);
-    //let (mr_rice_map, mr_gauss_map) = rice_homomorf_est::compute_for_uknown_snr(&mr_noisy, 3.4, 2);
-    //let (mr_rice_map, mr_gauss_map) = rice_homomorf_est::compute(&mr_noisy, &mr_snr, 3.4, 1);
-    //let (mr_rice_map, mr_gauss_map) = rice_homomorf_est::compute_for_uknown_snr(&mr_noisy, 3.4, 1);
-    println!("Completed, saving results");
-    save_image(&mr_rice_map, config.output_filename_Rician.to_string());
-    save_image(&mr_gauss_map, config.output_filename_Gaussian.to_string());
+    if config.use_snr == 1 && config.ex_filter_type == 2 {
+        let (mr_rice_map, mr_gauss_map) = rice_homomorf_est::compute(&mr_noisy, &mr_snr, 3.4, 2);
+        println!("Completed, saving results");
+        save_image(&mr_rice_map, config.output_filename_Rician.to_string());
+        save_image(&mr_gauss_map, config.output_filename_Gaussian.to_string());
+    } else if config.use_snr == 0 && config.ex_filter_type == 2 {
+        let (mr_rice_map, mr_gauss_map) = rice_homomorf_est::compute_for_uknown_snr(&mr_noisy, 3.4, 2);
+        println!("Completed, saving results");
+        save_image(&mr_rice_map, config.output_filename_Rician.to_string());
+        save_image(&mr_gauss_map, config.output_filename_Gaussian.to_string());
+    } else if config.use_snr == 1 && config.ex_filter_type == 1 {
+        let (mr_rice_map, mr_gauss_map) = rice_homomorf_est::compute(&mr_noisy, &mr_snr, 3.4, 1);
+        println!("Completed, saving results");
+        save_image(&mr_rice_map, config.output_filename_Rician.to_string());
+        save_image(&mr_gauss_map, config.output_filename_Gaussian.to_string());
+    } else if config.use_snr == 0 && config.ex_filter_type == 1 {
+        let (mr_rice_map, mr_gauss_map) = rice_homomorf_est::compute_for_uknown_snr(&mr_noisy, 3.4, 1);
+        println!("Completed, saving results");
+        save_image(&mr_rice_map, config.output_filename_Rician.to_string());
+        save_image(&mr_gauss_map, config.output_filename_Gaussian.to_string());
+    } else {
+        panic!("Config error");
+    }
 }
 
 fn main() {

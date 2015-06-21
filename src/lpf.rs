@@ -34,23 +34,23 @@ pub fn idct_inplace(y : &mut na::DVec<f64>) {
 
 pub fn dct2(mat_src : &na::DMat<f64>) -> na::DMat<f64>  {
     let mut mat = mat_src.clone();
-    for i in 0..mat.ncols() {
-        let mut slice = mat.col_slice(i, 0, mat.nrows());
-        println!("DCT SLICE COL (1): {:?}", slice);
-        dct_inplace(&mut slice);
-        println!("DCT SLICE COL (2): {:?}", slice);
-        for j in 0..mat.nrows() {
-            mat[(j, i)] = slice[j];
-        }
-        //println!("DCT MAT SLICE UPDATE ():\n{:?}\n", mat);
-    }
-    println!("MID DCT2 MATRIX (1):\n{:?}\n", mat);
+    //println!("MID DCT2 MATRIX (1):\n{:?}\n", mat);
     for i in 0..mat.nrows() {
         let mut slice = mat.row_slice(i, 0, mat.ncols());
         dct_inplace(&mut slice);
         for j in 0..mat.ncols() {
             mat[(i, j)] = slice[j];
         }
+    }
+    for i in 0..mat.ncols() {
+        let mut slice = mat.col_slice(i, 0, mat.nrows());
+        //println!("DCT SLICE COL (1): {:?}", slice);
+        dct_inplace(&mut slice);
+        //println!("DCT SLICE COL (2): {:?}", slice);
+        for j in 0..mat.nrows() {
+            mat[(j, i)] = slice[j];
+        }
+        //println!("DCT MAT SLICE UPDATE ():\n{:?}\n", mat);
     }
     mat
 }
@@ -96,16 +96,16 @@ pub fn lpf2(mat : na::DMat<f64>, sigma : f64) -> na::DMat<f64> {
     let mut gauss_mat = gaussian_filter(mat.nrows(), mat.ncols(), sigma * 2f64);
     let gauss_max = mat_max(&gauss_mat);
     gauss_mat = mat_map_mut(gauss_mat, |x| x / gauss_max);
-    println!("TEST IMG:\n{:?}\n", mat);
-    println!("GAUSS MAT:\n{:?}\n", gauss_mat);
+    //println!("TEST IMG:\n{:?}\n", mat);
+    //println!("GAUSS MAT:\n{:?}\n", gauss_mat);
     let mut mat_dct = dct2(&mat);
-    println!("DCT MAT:\n{:?}\n", mat_dct);
+    //println!("DCT MAT:\n{:?}\n", mat_dct);
     for i in 0..mat.nrows() {
         for j in 0..mat.ncols() {
             mat_dct[(i, j)] = mat_dct[(i, j)] * gauss_mat[(i, j)];
         }
     }
-    println!("DCT MAT (with Gauss):\n{:?}\n", mat_dct);
+    //println!("DCT MAT (with Gauss):\n{:?}\n", mat_dct);
     let mat_lpf = idct2(&mat_dct);
     mat_lpf
 }
