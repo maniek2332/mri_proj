@@ -37,7 +37,7 @@ fn is_less_then(mat: &DMat<f64>, value: f64) -> DMat<f64> {
 
 	for r in 0..rows {
 		for c in 0..cols {
-			if mat[(r,c)] <  value {
+			if mat[(r,c)] <=  value {
 				result[(r,c)] = 1.0;
 			}
 		}
