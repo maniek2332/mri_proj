@@ -49,7 +49,7 @@ pub fn load_config() -> Config {
         if eq != "=" {
             continue;
         }
-        println!("{} {} {}", var_name, eq, var_val_str);
+        //println!("{} {} {}", var_name, eq, var_val_str);
         if var_name == "use_snr" {
             cfg.use_snr = var_val_str.trim().parse::<i32>().unwrap();
         }
