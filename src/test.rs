@@ -7,6 +7,8 @@ use correct_rice_gauss;
 use em_ml_rice2D;
 use rice_homomorf_est;
 use lpf::{lpf2, dct_inplace, idct_inplace, dct2, idct2};
+use utils::{load_image, save_image};
+use filter2b::filter_img;
 
 
 pub fn test_approx1l() {
@@ -47,20 +49,35 @@ pub fn test_em_ml_rice2D() {
 	println!("test_em_ml_rice2D sigma (2):\n{:?}\n", &c);
 }
 
-pub fn test_rice_homomorf_est() {
-	println!("Starting test_rice_homomorf_est");
-	let a : DMat<f64> = DMat::from_row_vec(2, 2, &[1., 2., 0.5, 0.3]); 
-	let (b,c) = rice_homomorf_est::compute_for_uknown_snr(&a, 3.4, 2);
+//pub fn test_rice_homomorf_est() {
+	//println!("Starting test_rice_homomorf_est");
+	//let a : DMat<f64> = DMat::from_row_vec(2, 2, &[1., 2., 0.5, 0.3]); 
+	//let (b,c) = rice_homomorf_est::compute_for_uknown_snr(&a, 3.4, 2);
 	
-	println!("test_rice_homomorf_est 1 mapa_r (2):\n{:?}\n", &b);
-	println!("test_rice_homomorf_est 1 mapa_g (2):\n{:?}\n", &c);
+	//println!("test_rice_homomorf_est 1 mapa_r (2):\n{:?}\n", &b);
+	//println!("test_rice_homomorf_est 1 mapa_g (2):\n{:?}\n", &c);
 	
-	let d : DMat<f64> = DMat::from_row_vec(2, 2, &[1., 2., 0.5, 0.3]); 
-	let snr: DMat<f64> = DMat::new_zeros(2,2);
-	let (e,f) = rice_homomorf_est::compute(&a, &snr, 3.4, 2);
+	//let d : DMat<f64> = DMat::from_row_vec(2, 2, &[1., 2., 0.5, 0.3]); 
+	//let snr: DMat<f64> = DMat::new_zeros(2,2);
+	//let (e,f) = rice_homomorf_est::compute(&a, &snr, 3.4, 2);
 	
-	println!("test_rice_homomorf_est 2 mapa_r (2):\n{:?}\n", &e);
-	println!("test_rice_homomorf_est 2 mapa_g (2):\n{:?}\n", &f);
+	//println!("test_rice_homomorf_est 2 mapa_r (2):\n{:?}\n", &e);
+	//println!("test_rice_homomorf_est 2 mapa_g (2):\n{:?}\n", &f);
+//}
+
+pub fn test_filter() {
+    let mat = load_image("testmat.csv".to_string());
+    let filtered_mat = filter_img(&mat, 3, 1./9.);
+    println!("TEST FILTER [(0, 0)]: {}", filtered_mat[(0, 0)]);
+    println!("TEST FILTER [(5, 5)]: {}", filtered_mat[(5, 5)]);
+    println!("TEST FILTER [(15, 11)]: {}", filtered_mat[(15, 11)]);
+    let mut test_img2 = na::DMat::from_col_vec(2, 2,
+                                               &[25., 12., 8.33, 25.]);
+    println!("TEST FILTER IMG:\n{:?}\n", test_img2);
+    let filtered_mat2 = filter_img(&test_img2, 3, 1. / 9.);
+    println!("TEST FILTER RES:\n{:?}\n", filtered_mat2);
+
+    println!("= {}", (25. * 5. + 12. * 2. + 8.33 * 2.) * 1./9.);
 }
 
 pub fn test_lpf() {

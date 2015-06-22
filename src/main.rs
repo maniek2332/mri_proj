@@ -20,22 +20,22 @@ fn run() {
     let mr_snr = load_image(config.input_snr.to_string());
     println!("Starting algorithm...");
     if config.use_snr == 1 && config.ex_filter_type == 2 {
-        let (mr_rice_map, mr_gauss_map) = rice_homomorf_est::compute(&mr_noisy, &mr_snr, 3.4, 2);
+        let (mr_rice_map, mr_gauss_map) = rice_homomorf_est::compute(&mr_noisy, &mr_snr, config.lpf_f, 2, &config);
         println!("Completed, saving results");
         save_image(&mr_rice_map, config.output_filename_Rician.to_string());
         save_image(&mr_gauss_map, config.output_filename_Gaussian.to_string());
     } else if config.use_snr == 0 && config.ex_filter_type == 2 {
-        let (mr_rice_map, mr_gauss_map) = rice_homomorf_est::compute_for_uknown_snr(&mr_noisy, 3.4, 2);
+        let (mr_rice_map, mr_gauss_map) = rice_homomorf_est::compute_for_uknown_snr(&mr_noisy, config.lpf_f, 2, &config);
         println!("Completed, saving results");
         save_image(&mr_rice_map, config.output_filename_Rician.to_string());
         save_image(&mr_gauss_map, config.output_filename_Gaussian.to_string());
     } else if config.use_snr == 1 && config.ex_filter_type == 1 {
-        let (mr_rice_map, mr_gauss_map) = rice_homomorf_est::compute(&mr_noisy, &mr_snr, 3.4, 1);
+        let (mr_rice_map, mr_gauss_map) = rice_homomorf_est::compute(&mr_noisy, &mr_snr, config.lpf_f, 1, &config);
         println!("Completed, saving results");
         save_image(&mr_rice_map, config.output_filename_Rician.to_string());
         save_image(&mr_gauss_map, config.output_filename_Gaussian.to_string());
     } else if config.use_snr == 0 && config.ex_filter_type == 1 {
-        let (mr_rice_map, mr_gauss_map) = rice_homomorf_est::compute_for_uknown_snr(&mr_noisy, 3.4, 1);
+        let (mr_rice_map, mr_gauss_map) = rice_homomorf_est::compute_for_uknown_snr(&mr_noisy, config.lpf_f, 1, &config);
         println!("Completed, saving results");
         save_image(&mr_rice_map, config.output_filename_Rician.to_string());
         save_image(&mr_gauss_map, config.output_filename_Gaussian.to_string());
@@ -46,7 +46,7 @@ fn run() {
 
 fn main() {
     run();
-
+    //test::test_filter();
     //test::test_dct();
     //test::test_idct();
     //test::test_dct2();

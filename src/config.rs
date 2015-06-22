@@ -5,7 +5,7 @@ use std::io::BufRead;
 pub struct Config {
 	pub use_snr: i32,
 	pub ex_filter_type: i32,
-	pub ex_window_size: i32,
+	pub ex_window_size: usize,
 	pub ex_iterations: i32,
 	pub lpf_f: f64,
 	pub lpf_f_SNR: f64,
@@ -57,10 +57,10 @@ pub fn load_config() -> Config {
             cfg.ex_filter_type = var_val_str.trim().parse::<i32>().unwrap();
         }
         if var_name == "ex_window_size" {
-            cfg.ex_window_size = var_val_str.trim().parse::<i32>().unwrap();
+            cfg.ex_window_size = var_val_str.trim().parse::<usize>().unwrap();
         }
         if var_name == "ex_iterations" {
-            cfg.ex_window_size = var_val_str.trim().parse::<i32>().unwrap();
+            cfg.ex_iterations = var_val_str.trim().parse::<i32>().unwrap();
         }
         if var_name == "lpf_f" {
             cfg.lpf_f = var_val_str.trim().parse::<f64>().unwrap();

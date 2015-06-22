@@ -8,15 +8,18 @@ use em_ml_rice2D;
 use lpf;
 use correct_rice_gauss;
 
-pub fn compute_for_uknown_snr(mat : &DMat<f64>, lpf: f64, modo: i32) -> (DMat<f64>, DMat<f64>){
-	let (m2, sigma_n) = em_ml_rice2D::compute(&mat,10, 3);
+use utils;
+use config::Config;
+
+pub fn compute_for_uknown_snr(mat : &DMat<f64>, lpf: f64, modo: i32, config : &Config) -> (DMat<f64>, DMat<f64>){
+	let (m2, sigma_n) = em_ml_rice2D::compute(&mat,config.ex_iterations, config.ex_window_size);
 	let snr = matrix_math::div_matrix_by_matrix_each_value(&m2, &sigma_n);
 	
-	return compute(&mat, &snr, lpf, modo);
+	return compute(&mat, &snr, lpf, modo, &config);
 }
 
-pub fn compute(mat : &DMat<f64>, snr: &DMat<f64>, _lpf: f64, modo: i32) -> (DMat<f64>, DMat<f64>){
-	let (m2, sigma_n) = em_ml_rice2D::compute(&mat,10, 3);
+pub fn compute(mat : &DMat<f64>, snr: &DMat<f64>, _lpf: f64, modo: i32, config : &Config) -> (DMat<f64>, DMat<f64>){
+	let (m2, sigma_n) = em_ml_rice2D::compute(&mat,config.ex_iterations, config.ex_window_size);
 	
 	let m1= filter2b::filter_img(&mat, 5, 0.04);
     //println!("M1:\n{:?}\n", m1);

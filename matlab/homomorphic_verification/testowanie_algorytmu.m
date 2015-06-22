@@ -26,10 +26,10 @@ MR_noisy =  csvread('MR_noisy.csv');
 %[MapaR, MapaG] = rice_homomorf_est(MR_noisy, MR_SNR, 3.4, 2);
 
 % estymacja EM przy nieznanym SNR
-[MapaR, MapaG] = rice_homomorf_est(MR_noisy, 0, 3.4, 2);
+%[MapaR, MapaG] = rice_homomorf_est(MR_noisy, 0, 3.4, 2);
 
 % estymacja local mean przy znanym SNR
-%[MapaR, MapaG] = rice_homomorf_est(MR_noisy, MR_SNR, 3.4, 1);
+[MapaR, MapaG] = rice_homomorf_est(MR_noisy, MR_SNR, 3.4, 1);
 
 % estymacja local mean przy nieznanym SNR
 %[MapaR, MapaG] = rice_homomorf_est(MR_noisy, 0, 3.4, 1);

@@ -11,17 +11,21 @@ pub fn filter_img(image_src : &na::DMat<f64>, mask_size : usize, mask_val : f64)
     let size = image.nrows() as i32;
 
     let pos = |p| min(size - 1, max(0, p)) as usize;
-    let mask_pos = |p| (p + range) as usize;
+    //let mask_pos = |p| (p + range) as usize;
 
     for x in 0..size {
         for y in 0..size {
             let mut acc = 0f64;
             for xd in -range..range+1 {
                 for yd in -range..range+1 {
-                    acc += image_src[(pos(x + xd), pos(y + yd))] as f64 *
-                        mask[(mask_pos(xd), mask_pos(yd))] as f64;
+                    let val = image_src[(pos(x + xd), pos(y + yd))];
+                    //println!("Parts: {}, {}", image_src[(pos(x + xd), pos(y + yd))], mask[(mask_pos(xd), mask_pos(yd))]);
+                    //println!("...at: ({}, {}), ({}, {})", pos(x + xd), pos(y + yd), mask_pos(xd), mask_pos(yd));
+                    //println!("...val: {}", val);
+                    acc += val;
                 }
             }
+            acc = acc * mask_val;
             image[(x as usize, y as usize)] = acc;
         }
     }
